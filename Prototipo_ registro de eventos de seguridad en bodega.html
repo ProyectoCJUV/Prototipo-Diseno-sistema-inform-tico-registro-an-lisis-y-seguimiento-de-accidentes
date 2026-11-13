@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Registro de eventos de seguridad – Bodega</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#F3F6F9;--surf:#fff;--ink:#16222E;--mute:#5A6B7B;--line:#D5DEE7;--blue:#1F4E79;--blue2:#7FA6CC;--red:#C0392B;--amb:#B7791F;--grn:#2F7D4F;--tint:#E8EFF6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1720;--surf:#18232F;--ink:#E6EDF4;--mute:#97A8B8;--line:#2B3A49;--blue:#6FA3D6;--blue2:#3F6C98;--red:#E8685A;--amb:#E0A94A;--grn:#5FBF88;--tint:#1F2E3D;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1720;--surf:#18232F;--ink:#E6EDF4;--mute:#97A8B8;--line:#2B3A49;--blue:#6FA3D6;--blue2:#3F6C98;--red:#E8685A;--amb:#E0A94A;--grn:#5FBF88;--tint:#1F2E3D;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:var(--blue);color:#fff;padding:18px 20px 0}
+:root[data-theme="dark"] header,:root:not([data-theme="light"]) header{}
+.top{max-width:1100px;margin:0 auto}
+h1{margin:0;font-size:21px;font-weight:700}
+.sub{margin:2px 0 14px;font-size:13px;opacity:.85}
+nav{display:flex;gap:4px;overflow-x:auto}
+nav button{background:transparent;border:0;color:#fff;opacity:.75;font:600 14px inherit;font-family:inherit;padding:10px 16px;border-radius:8px 8px 0 0;cursor:pointer;white-space:nowrap}
+nav button[aria-selected="true"]{background:var(--bg);color:var(--blue);opacity:1}
+nav button:focus-visible,.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--blue2);outline-offset:2px}
+main{max-width:1100px;margin:0 auto;padding:20px}
+section[hidden]{display:none}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:16px}
+h2{margin:0 0 4px;font-size:18px}
+.hint{margin:0 0 16px;color:var(--mute);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+label{display:block;font-weight:600;font-size:13px;margin-bottom:4px}
+input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:9px 10px}
+textarea{min-height:76px;resize:vertical}
+.full{grid-column:1/-1}
+fieldset{border:1px solid var(--line);border-radius:8px;margin:18px 0 0;padding:14px}
+legend{font-weight:700;font-size:14px;padding:0 6px}
+.btn{font:600 14px inherit;font-family:inherit;border:0;border-radius:7px;padding:10px 18px;cursor:pointer;background:var(--blue);color:#fff}
+:root:not([data-theme="light"]) .btn{color:#0F1720}
+.btn.sec{background:transparent;color:var(--blue);border:1px solid var(--blue)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:720px}
+th{text-align:left;font-size:12.5px;color:var(--mute);font-weight:600;padding:8px 10px;border-bottom:2px solid var(--line)}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+.tag{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12.5px;font-weight:600;background:var(--tint);color:var(--blue)}
+.tag.Accidente{background:var(--red);color:#fff}
+.tag.Incidente{background:var(--amb);color:#fff}
+.tag.cerr{background:var(--grn);color:#fff}
+.tag.venc{background:var(--red);color:#fff}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:16px}
+.kpi{background:var(--surf);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.kpi b{display:block;font-size:30px;line-height:1.1;color:var(--blue)}
+.kpi.warn b{color:var(--red)}
+.kpi span{font-size:13px;color:var(--mute)}
+.bars{display:grid;gap:8px}
+.bar{display:grid;grid-template-columns:130px 1fr 44px;align-items:center;gap:10px;font-size:13.5px}
+.bar i{display:block;height:16px;border-radius:4px;background:var(--blue)}
+.bar i.r{background:var(--red)}
+.bar em{font-style:normal;text-align:right;font-weight:600}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:11px 20px;border-radius:8px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.on{opacity:1}
+.empty{padding:22px;text-align:center;color:var(--mute)}
+.note{font-size:12.5px;color:var(--mute);margin-top:6px}
+@media (prefers-reduced-motion:reduce){#toast{transition:none}}
+@media (max-width:560px){.bar{grid-template-columns:96px 1fr 40px}}
+</style>
+</head>
+<body>
+<header><div class="top">
+<h1>Registro de eventos de seguridad</h1>
+<p class="sub">Bodega · Prototipo de sistema informático con datos de ejemplo</p>
+<nav role="tablist" aria-label="Módulos">
+<button role="tab" aria-selected="true" data-t="registro">Registrar evento</button>
+<button role="tab" aria-selected="false" data-t="historial">Historial</button>
+<button role="tab" aria-selected="false" data-t="seguimiento">Acciones correctivas</button>
+<button role="tab" aria-selected="false" data-t="reportes">Reportes</button>
+</nav></div></header>
+<main>
+
+<section id="registro">
+<form class="card" id="f">
+<h2>Registrar evento</h2>
+<p class="hint">Completa los campos marcados con asterisco. Los casi accidentes también se registran aquí.</p>
+<div class="grid">
+<div><label for="fecha">Fecha y hora *</label><input type="datetime-local" id="fecha" required></div>
+<div><label for="tipo">Tipo de evento *</label><select id="tipo" required><option value="">Selecciona…</option><option>Accidente</option><option>Incidente</option><option>Casi accidente</option></select></div>
+<div><label for="area">Área *</label><select id="area" required><option value="">Selecciona…</option><option>Recepción</option><option>Almacenamiento</option><option>Racks y estiba</option><option>Montacargas</option><option>Embarques</option></select></div>
+<div><label for="turno">Turno *</label><select id="turno" required><option value="">Selecciona…</option><option>Matutino</option><option>Vespertino</option><option>Nocturno</option></select></div>
+<div class="full"><label for="desc">Descripción *</label><textarea id="desc" required placeholder="¿Qué ocurrió?"></textarea></div>
+<div><label for="riesgo">Riesgo identificado *</label><select id="riesgo" required><option value="">Selecciona…</option><option>Golpe</option><option>Caída</option><option>Atrapamiento</option><option>Manejo manual de cargas</option><option>Choque de montacargas</option><option>Caída de material</option></select></div>
+<div><label for="causa">Causa *</label><input id="causa" required placeholder="Causa probable"></div>
+<div><label for="persona">Persona involucrada</label><input id="persona" placeholder="Nombre o puesto"></div>
+<div><label for="evid">Evidencia o fotografía</label><input type="file" id="evid" accept="image/*"></div>
+</div>
+<fieldset><legend>Acción correctiva (opcional)</legend>
+<div class="grid">
+<div class="full"><label for="acc">Acción</label><input id="acc" placeholder="Qué se hará para evitar que se repita"></div>
+<div><label for="resp">Responsable</label><input id="resp"></div>
+<div><label for="comp">Fecha compromiso</label><input type="date" id="comp"></div>
+</div></fieldset>
+<div class="row"><button class="btn" type="submit">Guardar evento</button><button class="btn sec" type="reset">Limpiar</button></div>
+</form>
+</section>
+
+<section id="historial" hidden>
+<div class="card">
+<h2>Historial de eventos</h2>
+<p class="hint">Filtra por cualquier criterio para localizar un registro anterior.</p>
+<div class="grid">
+<div><label for="q">Buscar texto</label><input id="q" type="search" placeholder="Descripción, causa, persona…"></div>
+<div><label for="ft">Tipo</label><select id="ft"></select></div>
+<div><label for="fa">Área</label><select id="fa"></select></div>
+<div><label for="fu">Turno</label><select id="fu"></select></div>
+</div>
+<p class="note" id="cnt"></p>
+<div class="tw"><table><thead><tr><th>Folio</th><th>Fecha</th><th>Tipo</th><th>Área / turno</th><th>Descripción</th><th>Riesgo y causa</th></tr></thead><tbody id="hb"></tbody></table></div>
+</div>
+</section>
+
+<section id="seguimiento" hidden>
+<div class="kpis" id="sk"></div>
+<div class="card">
+<h2>Seguimiento de acciones correctivas</h2>
+<p class="hint">Las acciones con fecha compromiso vencida se marcan en rojo. Al cerrar una acción se registra la fecha de cierre.</p>
+<div class="tw"><table><thead><tr><th>Folio</th><th>Acción</th><th>Responsable</th><th>Compromiso</th><th>Estatus</th><th>Cierre</th></tr></thead><tbody id="sb"></tbody></table></div>
+</div>
+</section>
+
+<section id="reportes" hidden>
+<div class="kpis" id="rk"></div>
+<div class="cols" id="rc"></div>
+</section>
+</main>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+var KEY="seg_bodega_proto_v1",TODAY=new Date("2026-11-12T12:00:00");
+var seed=[
+{id:"EV-001",f:"2026-09-14T08:20",t:"Casi accidente",a:"Montacargas",u:"Matutino",d:"Montacargas pasó cerca de un surtidor en pasillo sin señalización.",r:"Choque de montacargas",c:"Falta de señalización peatonal",p:"",acc:{x:"Pintar andadores peatonales",o:"EHS",c:"2026-09-30",s:"Cerrada",z:"2026-09-28"}},
+{id:"EV-002",f:"2026-09-22T15:40",t:"Incidente",a:"Racks y estiba",u:"Vespertino",d:"Caja se deslizó de tarima durante la estiba.",r:"Caída de material",c:"Tarima mal armada",p:"Operador",acc:{x:"Reforzar capacitación de estiba",o:"Supervisor",c:"2026-10-10",s:"Cerrada",z:"2026-10-12"}},
+{id:"EV-003",f:"2026-10-03T23:10",t:"Accidente",a:"Recepción",u:"Nocturno",d:"Atrapamiento leve de mano al mover carga.",r:"Atrapamiento",c:"Falta de guantes adecuados",p:"Materialista",acc:{x:"Dotar guantes y revisar procedimiento",o:"EHS",c:"2026-10-20",s:"En proceso",z:""}},
+{id:"EV-004",f:"2026-10-11T10:05",t:"Casi accidente",a:"Embarques",u:"Matutino",d:"Tarima cayó cerca de la rampa sin lesionados.",r:"Caída de material",c:"Rampa con desnivel",p:"",acc:{x:"Nivelar rampa de embarques",o:"Mantenimiento",c:"2026-11-05",s:"Pendiente",z:""}},
+{id:"EV-005",f:"2026-10-19T17:30",t:"Incidente",a:"Montacargas",u:"Vespertino",d:"Montacargas golpeó rack de nivel bajo.",r:"Choque de montacargas",c:"Maniobra en espacio reducido",p:"Operador",acc:{x:"Revisar anchos de pasillo",o:"Líder de turno",c:"2026-11-15",s:"En proceso",z:""}},
+{id:"EV-006",f:"2026-10-28T02:15",t:"Casi accidente",a:"Almacenamiento",u:"Nocturno",d:"Resbalón en pasillo por derrame sin limpiar.",r:"Caída",c:"Derrame no reportado",p:"",acc:null},
+{id:"EV-007",f:"2026-11-04T09:00",t:"Accidente",a:"Racks y estiba",u:"Matutino",d:"Golpe en pierna al acomodar material.",r:"Golpe",c:"Pasillo obstruido",p:"Surtidor",acc:{x:"Liberar pasillos y marcar zonas",o:"EHS",c:"2026-11-20",s:"Pendiente",z:""}}
+];
+var ev;
+try{ev=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){ev=null}
+if(!ev)ev=seed;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(ev))}catch(e){}}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function $(i){return document.getElementById(i)}
+function fd(s){if(!s)return"—";var d=new Date(s.length>10?s:s+"T12:00:00");return d.toLocaleDateString("es-MX",{day:"2-digit",month:"short",year:"numeric"})}
+function toast(m){var t=$("toast");t.textContent=m;t.className="on";setTimeout(function(){t.className=""},2200)}
+function venc(a){return a&&a.s!=="Cerrada"&&a.c&&new Date(a.c+"T23:59:59")<TODAY}
+
+/* tabs */
+var tabs=document.querySelectorAll("nav button");
+function show(n){tabs.forEach(function(b){b.setAttribute("aria-selected",b.dataset.t===n)});["registro","historial","seguimiento","reportes"].forEach(function(s){$(s).hidden=s!==n});if(n==="historial")hist();if(n==="seguimiento")seg();if(n==="reportes")rep()}
+tabs.forEach(function(b){b.onclick=function(){show(b.dataset.t)}});
+
+/* registro */
+function nowLocal(){var d=new Date(),p=function(n){return String(n).padStart(2,"0")};return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())+"T"+p(d.getHours())+":"+p(d.getMinutes())}
+$("fecha").value=nowLocal();
+$("f").addEventListener("reset",function(){setTimeout(function(){$("fecha").value=nowLocal()},0)});
+$("f").onsubmit=function(e){e.preventDefault();
+var n=ev.length+1,id="EV-"+String(n).padStart(3,"0"),x=$("acc").value.trim();
+ev.push({id:id,f:$("fecha").value,t:$("tipo").value,a:$("area").value,u:$("turno").value,d:$("desc").value.trim(),r:$("riesgo").value,c:$("causa").value.trim(),p:$("persona").value.trim(),evid:$("evid").files[0]?$("evid").files[0].name:"",
+acc:x?{x:x,o:$("resp").value.trim()||"Sin asignar",c:$("comp").value,s:"Pendiente",z:""}:null});
+save();this.reset();toast("Evento "+id+" registrado")};
+
+/* historial */
+function opts(el,label,list){el.innerHTML='<option value="">'+label+'</option>'+list.map(function(v){return"<option>"+esc(v)+"</option>"}).join("")}
+opts($("ft"),"Todos",["Accidente","Incidente","Casi accidente"]);
+opts($("fa"),"Todas",["Recepción","Almacenamiento","Racks y estiba","Montacargas","Embarques"]);
+opts($("fu"),"Todos",["Matutino","Vespertino","Nocturno"]);
+["q","ft","fa","fu"].forEach(function(i){$(i).oninput=hist});
+function hist(){var q=$("q").value.toLowerCase(),t=$("ft").value,a=$("fa").value,u=$("fu").value;
+var l=ev.filter(function(e){return(!t||e.t===t)&&(!a||e.a===a)&&(!u||e.u===u)&&(!q||(e.d+" "+e.c+" "+e.p+" "+e.r).toLowerCase().indexOf(q)>-1)}).sort(function(x,y){return y.f<x.f?-1:1});
+$("cnt").textContent=l.length+" de "+ev.length+" eventos";
+$("hb").innerHTML=l.length?l.map(function(e){return"<tr><td>"+esc(e.id)+"</td><td>"+fd(e.f)+"</td><td><span class='tag "+(e.t==="Casi accidente"?"":esc(e.t))+"'>"+esc(e.t)+"</span></td><td>"+esc(e.a)+"<br><span class='note'>"+esc(e.u)+"</span></td><td>"+esc(e.d)+"</td><td>"+esc(e.r)+"<br><span class='note'>"+esc(e.c)+"</span></td></tr>"}).join(""):"<tr><td colspan='6' class='empty'>No hay eventos con estos filtros. Cambia o limpia los filtros.</td></tr>"}
+
+/* seguimiento */
+function seg(){var A=ev.filter(function(e){return e.acc}),p=A.filter(function(e){return e.acc.s==="Pendiente"}).length,pr=A.filter(function(e){return e.acc.s==="En proceso"}).length,c=A.filter(function(e){return e.acc.s==="Cerrada"}).length,v=A.filter(function(e){return venc(e.acc)}).length;
+$("sk").innerHTML=k(p,"Pendientes")+k(pr,"En proceso")+k(c,"Cerradas")+k(v,"Vencidas",1);
+var sinacc=ev.filter(function(e){return!e.acc}).length;
+$("sb").innerHTML=A.length?A.map(function(e){var a=e.acc,vv=venc(a);return"<tr><td>"+esc(e.id)+"</td><td>"+esc(a.x)+(vv?" <span class='tag venc'>Vencida</span>":"")+"</td><td>"+esc(a.o)+"</td><td>"+fd(a.c)+"</td><td><select data-id='"+esc(e.id)+"' aria-label='Estatus de "+esc(e.id)+"'>"+["Pendiente","En proceso","Cerrada"].map(function(s){return"<option"+(s===a.s?" selected":"")+">"+s+"</option>"}).join("")+"</select></td><td>"+fd(a.z)+"</td></tr>"}).join("")+(sinacc?"<tr><td colspan='6' class='note'>"+sinacc+" evento(s) no tienen acción correctiva registrada.</td></tr>":""):"<tr><td colspan='6' class='empty'>Aún no hay acciones correctivas. Agrega una al registrar un evento.</td></tr>";
+document.querySelectorAll("#sb select").forEach(function(s){s.onchange=function(){var e=ev.filter(function(x){return x.id===s.dataset.id})[0];e.acc.s=s.value;e.acc.z=s.value==="Cerrada"?"2026-11-12":"";save();seg();toast("Acción "+e.id+": "+s.value)}})}
+function k(n,l,w){return"<div class='kpi"+(w&&n?" warn":"")+"'><b>"+n+"</b><span>"+l+"</span></div>"}
+
+/* reportes */
+function cnt(key){var o={};ev.forEach(function(e){o[e[key]]=(o[e[key]]||0)+1});return Object.keys(o).map(function(n){return[n,o[n]]}).sort(function(a,b){return b[1]-a[1]})}
+function bars(t,key,red){var d=cnt(key),m=d[0]?d[0][1]:1;return"<div class='card'><h2>"+t+"</h2><div class='bars'>"+d.map(function(r){return"<div class='bar'><span>"+esc(r[0])+"</span><i class='"+(red?"r":"")+"' style='width:"+Math.round(r[1]/m*100)+"%'></i><em>"+r[1]+"</em></div>"}).join("")+"</div></div>"}
+function rep(){var A=ev.filter(function(e){return e.acc}),cl=A.filter(function(e){return e.acc.s==="Cerrada"}).length,cm=ev.filter(function(e){return e.t==="Casi accidente"}).length;
+$("rk").innerHTML=k(ev.length,"Eventos registrados")+k(cm,"Casi accidentes")+k(A.length?Math.round(cl/A.length*100)+"%":"—","Acciones cerradas")+k(A.filter(function(e){return venc(e.acc)}).length,"Acciones vencidas",1);
+$("rc").innerHTML=bars("Eventos por tipo","t")+bars("Eventos por área","a")+bars("Eventos por turno","u")+bars("Riesgos recurrentes","r",1)}
+</script>
+</body>
+</html>
